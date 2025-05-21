@@ -44,7 +44,6 @@ jobs:
             MY_ENV: ${{ secrets.env }}
           shell: bash
           run: |
-            ls -alh
             echo "$MY_ENV" >> simplechat/application/single_app/.env
 
         - name: Upload Swagger file artifact
