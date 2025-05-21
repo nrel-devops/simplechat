@@ -1,0 +1,63 @@
+name: Build and deploy Simplechat
+on:
+  #push:
+  #  branches:
+  #    - Development
+  workflow_dispatch:
+    inputs:
+      env:
+        description: Environment
+        required: true
+        default: Nonprod
+        type: choice
+        options:
+          - Nonprod
+          - Prod
+      tag:
+        description: Tag
+        required: true
+        default: v1.0.0
+        type: string
+
+jobs:
+  deploy:
+      runs-on: ubuntu-latest
+      environment:
+        name: ${{ inputs.env }}
+        url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+      permissions:
+        id-token: write #This is required for requesting the JWT
+        contents: read #This is required for actions/checkout
+  
+      steps:
+        - name: Download artifact github
+          run: |
+            curl -L -o release.zip https://github.com/microsoft/simplechat/archive/refs/tags/${{ inputs.tag }}.zip
+
+  
+        - name: Unzip artifact for deployment
+          run: unzip release.zip && cd simplechat*
+        
+        - name: Set .env file
+          env:
+            MY_ENV: ${{ secrets.env }}
+          shell: bash
+          run: |
+            echo "$MY_ENV" >> .env
+
+  
+        - name: Login to Azure
+          uses: azure/login@v2
+          with:
+            client-id: ${{ secrets.CLIENTID }}
+            tenant-id: ${{ secrets.TENANTID}}
+            subscription-id: ${{ secrets.SUBSCRIPTIONID }}
+  
+        - name: 'Deploy to Azure Web App'
+          uses: azure/webapps-deploy@v3
+          id: deploy-to-webapp
+          with:
+            app-name: ${{ vars.APPNAME }}
+            package: application/single_app/
+            #slot-name: 'Production'
