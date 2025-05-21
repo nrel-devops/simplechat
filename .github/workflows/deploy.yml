@@ -16,7 +16,7 @@ on:
       tag:
         description: Tag
         required: true
-        default: v1.0.0
+        default: v0.212.091
         type: string
 
 jobs:
@@ -37,7 +37,7 @@ jobs:
 
   
         - name: Unzip artifact for deployment
-          run: unzip release.zip && cd simplechat*
+          run: unzip release.zip && mv simplechat* simplechat
         
         - name: Set .env file
           env:
@@ -45,7 +45,7 @@ jobs:
           shell: bash
           run: |
             ls -alh
-            echo "$MY_ENV" >> application/single_app/.env
+            echo "$MY_ENV" >> simplechat/application/single_app/.env
 
   
         - name: Login to Azure
@@ -60,5 +60,5 @@ jobs:
           id: deploy-to-webapp
           with:
             app-name: ${{ vars.APPNAME }}
-            package: application/single_app/
+            package: aimplechat/application/single_app/
             #slot-name: 'Production'
