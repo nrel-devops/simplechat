@@ -47,6 +47,13 @@ jobs:
             ls -alh
             echo "$MY_ENV" >> simplechat/application/single_app/.env
 
+        - name: Upload Swagger file artifact
+          uses: actions/upload-artifact@v4
+          with:
+            name: swaggerfile
+            path: |
+              simplechat/artifacts/open_api/openapi.yaml
+
   
         - name: Login to Azure
           uses: azure/login@v2
