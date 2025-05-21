@@ -44,6 +44,7 @@ jobs:
             MY_ENV: ${{ secrets.env }}
           shell: bash
           run: |
+            ls -alh
             echo "$MY_ENV" >> application/single_app/.env
 
   
