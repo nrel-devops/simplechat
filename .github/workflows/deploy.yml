@@ -44,7 +44,7 @@ jobs:
             MY_ENV: ${{ secrets.env }}
           shell: bash
           run: |
-            echo "$MY_ENV" >> .env
+            echo "$MY_ENV" >> application/single_app/.env
 
   
         - name: Login to Azure
